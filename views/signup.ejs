@@ -9,6 +9,13 @@
   <body>
     <h1>Sign Up</h1>
 
+    <ul>
+      <% if (typeof errors !== 'undefined' && errors.length > 0) { %> <%
+      errors.forEach(error => { %>
+      <li><%= error.message %></li>
+      <% }) %> <% } %>
+    </ul>
+
     <form action="/signup" method="POST">
       <div>
         <input
@@ -52,7 +59,7 @@
 
       <div>
         <input
-          type="confPass"
+          type="password"
           id="confPass"
           name="confPass"
           placeholder="Confirm Password"
