@@ -6,6 +6,11 @@ const bcrypt = require("bcrypt");
 const pool = require("./db/pool");
 const session = require("express-session");
 const flash = require("connect-flash");
+const passport = require("passport");
+
+const initializePassport = require("./config/passport");
+
+initializePassport(passport);
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,17 +26,20 @@ app.use(
   })
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(flash());
 
 app.get("/", (req, res) => {
   res.render("index");
 });
 
-app.get("/signup", (req, res) => {
+app.get("/signup", checkAuthenticated, (req, res) => {
   res.render("signup");
 });
 
-app.get("/login", (req, res) => {
+app.get("/login", checkAuthenticated, (req, res) => {
   res.render("login", { messages: req.flash() });
 });
 
@@ -39,8 +47,22 @@ app.get("/secret_key", (req, res) => {
   res.render("secret");
 });
 
-app.get("/dashboard", (req, res) => {
-  res.render("dashboard", { user: "Work" });
+app.get("/dashboard", checkNotAuthenticated, (req, res) => {
+  res.render("dashboard");
+});
+
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      // Handle the error, e.g., log it and/or flash an error message
+      console.error("Logout error:", err);
+      req.flash("error_msg", "An error occurred while logging out.");
+      return res.redirect("/dashboard"); // or wherever you want to redirect on error
+    }
+
+    req.flash("success_msg", "You have logged out");
+    res.redirect("/login");
+  });
 });
 
 app.post("/signup", async (req, res) => {
@@ -94,6 +116,30 @@ app.post("/signup", async (req, res) => {
     }
   );
 });
+
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+);
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/dashboard");
+  }
+  next();
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect("/login");
+}
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
