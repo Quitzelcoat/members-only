@@ -7,8 +7,22 @@
     <title>Members Only</title>
   </head>
   <body>
+    <% if (user) { %>
+    <h1>Welcome, <%= user.first_name %>!</h1>
     <a href="/logout">Logout</a>
 
-    <h1>Hello</h1>
+    <% if (user.is_member) { %>
+    <p>You are a member! Enjoy all the features of the dashboard.</p>
+    <a href="/new-message">New Message</a>
+    <% } else { %>
+    <p>You are not a member yet. Enter your secret key to join:</p>
+    <a href="/secret">Enter Secret Key</a>
+    <% } %> <% } else { %>
+    <h1>Welcome to Members Only</h1>
+    <p>
+      Please <a href="/login">login</a> or <a href="/signup">signup</a> to
+      access more features.
+    </p>
+    <% } %>
   </body>
 </html>
