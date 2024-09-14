@@ -7,6 +7,7 @@ const passport = require("passport");
 
 const initializePassport = require("./config/passport");
 const authRoutes = require("./routes/authRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 initializePassport(passport);
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/", authRoutes);
+app.use("/messages", messageRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>

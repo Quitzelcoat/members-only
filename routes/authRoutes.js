@@ -5,34 +5,22 @@ const {
   getSignup,
   getLogin,
   getSecretKey,
-  getDashboard,
   logout,
   signup,
   submitSecretKey,
+  checkAuthenticated,
+  ensureAuthenticated,
 } = require("../controllers/authController");
 
+const { getMsgDashboard } = require("../controllers/messageController");
+
 const router = express.Router();
-
-// Middleware to check if user is authenticated
-function checkAuthenticated(req, res, next) {
-  if (req.isAuthenticated()) {
-    return res.redirect("/dashboard");
-  }
-  next();
-}
-
-function ensureAuthenticated(req, res, next) {
-  if (!req.isAuthenticated()) {
-    return res.redirect("/login");
-  }
-  next();
-}
 
 router.get("/", getIndex);
 router.get("/signup", checkAuthenticated, getSignup); // Redirect to dashboard if logged in
 router.get("/login", checkAuthenticated, getLogin); // Redirect to dashboard if logged in
 router.get("/secret", ensureAuthenticated, getSecretKey);
-router.get("/dashboard", getDashboard);
+router.get("/dashboard", getMsgDashboard);
 router.get("/logout", logout);
 
 router.post("/signup", signup);

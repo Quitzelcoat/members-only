@@ -17,10 +17,6 @@ exports.getSecretKey = (req, res) => {
   res.render("secret");
 };
 
-exports.getDashboard = (req, res) => {
-  res.render("dashboard", { user: req.user });
-};
-
 exports.logout = async (req, res) => {
   const userId = req.user.id;
 
@@ -127,4 +123,28 @@ exports.submitSecretKey = async (req, res) => {
     req.flash("error_msg", "Incorrect secret key. Please try again.");
     return res.redirect("/secret");
   }
+};
+
+exports.ensureAuthenticated = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect("/login");
+  }
+  next();
+};
+
+// Middleware to check if user is authenticated
+exports.checkAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return res.redirect("/dashboard");
+  }
+  next();
+};
+
+// Middleware to ensure the user is a member
+exports.ensureIsMember = (req, res, next) => {
+  if (req.user && req.user.is_member) {
+    return next();
+  }
+  req.flash("error_msg", "You must be a member to access this page.");
+  res.redirect("/dashboard");
 };

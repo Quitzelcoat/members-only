@@ -9,20 +9,47 @@
   <body>
     <% if (user) { %>
     <h1>Welcome, <%= user.first_name %>!</h1>
+
     <a href="/logout">Logout</a>
 
     <% if (user.is_member) { %>
+
     <p>You are a member! Enjoy all the features of the dashboard.</p>
-    <a href="/new-message">New Message</a>
+    <a href="/messages/new">Create a new message</a>
+
     <% } else { %>
+
     <p>You are not a member yet. Enter your secret key to join:</p>
     <a href="/secret">Enter Secret Key</a>
-    <% } %> <% } else { %>
+
+    <% } %>
+
+    <!-- Display Messages -->
+    <h2>Messages</h2>
+    <ul>
+      <% messages.forEach(message => { %>
+      <li>
+        <h3><%= message.title %></h3>
+        <p><%= message.content %></p>
+
+        <!-- Only show the author and date if the user is a member -->
+        <p>
+          <strong>Author:</strong> <%= message.first_name %> <% if
+          (message.timestamp) { %> | <strong>Date:</strong> <%= new
+          Date(message.timestamp).toLocaleString() %> <% } %>
+        </p>
+      </li>
+      <% }); %>
+    </ul>
+
+    <% } else { %>
     <h1>Welcome to Members Only</h1>
+
     <p>
       Please <a href="/login">login</a> or <a href="/signup">signup</a> to
       access more features.
     </p>
+
     <% } %>
   </body>
 </html>
