@@ -1,0 +1,45 @@
+/* 
+Colors list:
+  003135
+  024950
+  964734
+  0fa4af
+  afdde5
+*/
+
+body {
+  background-color: #afdde5;
+  color: #003135;
+  height: 100%;
+  margin: 0;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.title {
+  margin: 0;
+}
+
+.links {
+  padding-top: 1rem;
+}
+
+.links a {
+  text-decoration: none;
+  padding-right: 10px;
+  color: #964734;
+  font-weight: 600;
+  font-size: 18px;
+  transition: color 0.1s ease-in;
+}
+
+.links a:hover {
+  color: #003135;
+}
